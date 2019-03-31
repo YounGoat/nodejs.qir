@@ -39,14 +39,15 @@ There are two collections of methods in this package.
 
 ```javascript
 const qir       = require('qir');
-const qirSync   = require('qir/sync');
-const qirAsync  = require('qir/async');
+const qirSync   = require('qir/syncing');
+const qirAsync  = require('qir/asyncing');
 
 qir.syncing  === qirSync    // true
 qir.asyncing === qirAsync   // true
 ```
 
-The two collections are parallel. Each has following methods:
+The two collections are parallel. Each has following methods:  
+__ATTENTION: In asynchronous mode, the leading type names represent NOT what the function will return on invoked, BUT *data* in `.then(data)`. Actually, each function will return an instance of `Promise` in asynchronous mode.__
 
 *   void __appendFile__( string *filename*, string | Buffer *data* )
 *   void __copyFile__( string *src*, string *dest*, number *flags* )
@@ -79,4 +80,3 @@ fs.mkdirSync('/foo/bar/quz');
 // You may complete these operations in one step via `qir`.
 qir.syncing.mkd('/foo/bar/quz');
 ```
-

@@ -29,7 +29,12 @@ const MODULE_REQUIRE = 1
         if (! await exists(dirname)) { 
             let parent = path.resolve(dirname, '..');
             await mkd(parent);
-            await mkdir(dirname);
+            await mkdir(dirname).catch(err => {
+                // 异步执行可能存在这样的问题，即在判断的时候，目录确实不存在，
+                // 但当创建的时候，它又已经存在了。故此类错误直接忽略。
+                if (err.code == 'EEXIST') return null;
+                else throw err;
+            });
         }
     }
 
