@@ -8,9 +8,13 @@ const MODULE_REQUIRE = 1
 	/* in-package */
 	, syncing = require('./syncing')
 	, asyncing = require('./asyncing')
+	, AsyncDir = require('./AsyncDir')
+	, SyncDir = require('./SyncDir')
 	;
 
 module.exports = {
-	syncing,
+	AsyncDir,
+	SyncDir,
 	asyncing,
+	syncing,
 };

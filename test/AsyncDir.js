@@ -35,6 +35,17 @@ describe('AsyncDir', () => {
         assert.equal(realpath, P(pathname));
     });
 
+    it('readFile', async () => {
+        let filename = 'readFile/README';
+        await asyncdir.writeFile(filename, TXT);
+        
+        let buf = await asyncdir.readFile(filename);
+        assert.equal(buf.toString(), TXT);
+
+        let txt = await asyncdir.readFile(filename, 'utf8');
+        assert.equal(txt, TXT);
+    });
+
     it('appendFile', async () => {
         let filename = 'appendFile/README';
         await asyncdir.appendFile(filename, TXT);

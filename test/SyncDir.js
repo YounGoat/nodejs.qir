@@ -35,6 +35,17 @@ describe('SyncDir', () => {
         assert.equal(realpath, P(pathname));
     });
 
+    it('readFile', async () => {
+        let filename = 'readFile/README';
+        syncdir.writeFile(filename, TXT);
+        
+        let buf = syncdir.readFile(filename);
+        assert.equal(buf.toString(), TXT);
+
+        let txt = syncdir.readFile(filename, 'utf8');
+        assert.equal(txt, TXT);
+    });    
+
     it('appendFile', () => {
         let filename = 'appendFile/README';
         syncdir.appendFile(filename, TXT);

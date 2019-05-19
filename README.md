@@ -63,6 +63,10 @@ Each of the method collections and class instances has following methods:
     __resolve__( string *pathname* )  
     Only available for instances of `AsyncDir` and `SyncDir`.
 
+*   string | Buffer | Promis(string) | Promise(Buffer)  
+    __readFile__( string *pathname* )  
+    Only available for instances of `AsyncDir` and `SyncDir`.
+
 *   void | Promise(void)   
     __appendFile__( string *filename*, string | Buffer *data* )
 
@@ -84,7 +88,7 @@ Each of the method collections and class instances has following methods:
 *   void | Promise(void)  
     __mkd_parent__( string *pathname* )
 
-*   integer | Promise(integer)
+*   integer | Promise(integer)  
     __open__( string *filename* [, string | number *flags* [, integer *mode* ] ] )
 
 *   void | Promise(void)  

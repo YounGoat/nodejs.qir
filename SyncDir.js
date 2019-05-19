@@ -2,25 +2,31 @@
 
 const MODULE_REQUIRE = 1
     /* built-in */
-    , path = require('path')
+    , fs = require('fs')
     
     /* NPM */
     
     /* in-package */
+    , Dir = require('./class/Dir')
     , syncing = require('./syncing')
 
     /* in-file */
     ;
 
-class SyncDir {
+class SyncDir extends Dir {
 
     constructor(base) {
-        this.base = base;
+        super(base);
         Object.assign(this, syncing);
     }
 
-    resolve(pathname) {
-        return path.resolve(this.base, pathname);
+    /**
+     * Read file content.
+     * @param {string}  filename 
+     * @param {string} [encoding]
+     */
+    readFile(filename, encoding) {
+        return fs.readFileSync(this.resolve(filename), encoding);
     }
 }
 

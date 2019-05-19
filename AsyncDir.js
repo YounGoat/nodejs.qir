@@ -2,25 +2,33 @@
 
 const MODULE_REQUIRE = 1
     /* built-in */
-    , path = require('path')
+    , fs = require('fs')
+    , util = require('util')
     
     /* NPM */
     
     /* in-package */
     , asyncing = require('./asyncing')
+    , Dir = require('./class/Dir')
 
     /* in-file */
+    , readFile = util.promisify(fs.readFile)
     ;
 
-class AsyncDir {
+class AsyncDir extends Dir {
 
     constructor(base) {
-        this.base = base;
+        super(base);
         Object.assign(this, asyncing);
     }
 
-    resolve(pathname) {
-        return path.resolve(this.base, pathname);
+    /**
+     * Read file content.
+     * @param {string}  filename 
+     * @param {string} [encoding]
+     */
+    readFile(filename, encoding) {
+        return readFile(this.resolve(filename), encoding);
     }
 }
 
