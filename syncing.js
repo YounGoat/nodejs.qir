@@ -58,6 +58,10 @@ const syncing = {};
  * @param  {string|Buffer} data
  */
 syncing.appendFile = function(filename, data) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
     mkd_parent(filename);
     fs.appendFileSync(filename, data);
     return;
@@ -69,6 +73,11 @@ syncing.appendFile = function(filename, data) {
  * @param  {number} [flags]          - see fs.copyFile() for details about flags.
  */
 syncing.copyFile = function(srcFilename, destFilename, flags) {
+    if (this.resolve) {
+        srcFilename = this.resolve(srcFilename);
+        destFilename = this.resolve(destFilename);
+    }
+
     mkd_parent(destFilename);
     fs.copyFileSync(srcFilename, destFilename, flags);
     return;
@@ -79,6 +88,10 @@ syncing.copyFile = function(srcFilename, destFilename, flags) {
  * @param  {Object} [options]   - see fs.createWriteStream() for details about options.
  */
 syncing.createWriteStream = function(filename, options) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
     mkd_parent(filename);
     return fs.createWriteStream(filename, options);
 };
@@ -88,6 +101,11 @@ syncing.createWriteStream = function(filename, options) {
  * @param  {string} newPath
  */
 syncing.link = function(existingPath, newPath) {
+    if (this.resolve) {
+        existingPath = this.resolve(existingPath);
+        newPath = this.resolve(newPath);
+    }
+
     mkd_parent(newPath);
     fs.linkSync(existingPath, newPath);
     return 
@@ -98,6 +116,10 @@ syncing.link = function(existingPath, newPath) {
  * @param  {string} dirname
  */
 syncing.mkd = function(dirname) {
+    if (this.resolve) {
+        dirname = this.resolve(dirname);
+    }
+
     mkd(dirname);
     return;
 };
@@ -107,6 +129,10 @@ syncing.mkd = function(dirname) {
  * @param  {string} [prefix]
  */
 syncing.mkd_temp = function(dirname, prefix) {
+    if (this.resolve) {
+        dirname = this.resolve(dirname);
+    }
+
     mkd(dirname);
     if (prefix) {
         prefix = path.join(dirname, prefix);
@@ -124,6 +150,10 @@ syncing.mkd_temp = function(dirname, prefix) {
  * @param  {string} pathname
  */
 syncing.mkd_parent = function(pathname) {
+    if (this.resolve) {
+        pathname = this.resolve(pathname);
+    }
+
     mkd_parent(pathname);
     return;  
 };
@@ -134,6 +164,10 @@ syncing.mkd_parent = function(pathname) {
  * @param  {integer}       [mode]
  */
 syncing.open = function(filename, flags = 'r', mode) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
     touch(filename);
     return fs.openSync(filename, flags, mode);
 };
@@ -143,6 +177,11 @@ syncing.open = function(filename, flags = 'r', mode) {
  * @param  {string} newPath
  */
 syncing.rename = function(oldPath, newPath) {
+    if (this.resolve) {
+        oldPath = this.resolve(oldPath);
+        newPath = this.resolve(newPath);
+    }
+
     mkd_parent(newPath);
     fs.renameSync(oldPath, newPath);
     return;
@@ -152,6 +191,10 @@ syncing.rename = function(oldPath, newPath) {
  * @param  {string} pathname
  */
 syncing.rmfr = function(pathname) {
+    if (this.resolve) {
+        pathname = this.resolve(pathname);
+    }
+
     rmfr(pathname);
     return;
 };
@@ -160,6 +203,10 @@ syncing.rmfr = function(pathname) {
  * @param  {string} filename
  */
 syncing.touch = function(filename) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
     touch(filename);
     return;
 };
@@ -169,6 +216,10 @@ syncing.touch = function(filename) {
  * @param  {string|Buffer|TypedArray|DataView} data - see fs.writeFile() for details about data.
  */
 syncing.writeFile = function(filename, data) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+    
     mkd_parent(filename);
     fs.writeFileSync(filename, data);
     return;

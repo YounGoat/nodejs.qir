@@ -1,4 +1,3 @@
-
 'use strict';
 
 const MODULE_REQUIRE = 1

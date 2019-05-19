@@ -79,6 +79,10 @@ const asyncing = {};
  * @param  {string|Buffer} data
  */
 asyncing.appendFile = async function(filename, data) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
     await mkd_parent(filename);
     await appendFile(filename, data);
 };
@@ -89,6 +93,11 @@ asyncing.appendFile = async function(filename, data) {
  * @param  {number} [flags]          - see fs.copyFile() for details about flags.
  */
 asyncing.copyFile = async function(srcFilename, destFilename, flags) {
+    if (this.resolve) {
+        srcFilename = this.resolve(srcFilename);
+        destFilename = this.resolve(destFilename);
+    }
+
     await mkd_parent(destFilename);
     await copyFile(srcFilename, destFilename, flags);
 };
@@ -98,6 +107,10 @@ asyncing.copyFile = async function(srcFilename, destFilename, flags) {
  * @param  {Object} [options]   - see fs.createWriteStream() for details about options.
  */
 asyncing.createWriteStream = async function(filename, options) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
     await mkd_parent(filename);
     return fs.createWriteStream(filename, options);
 };
@@ -107,6 +120,11 @@ asyncing.createWriteStream = async function(filename, options) {
  * @param  {string} newPath
  */
 asyncing.link = async function(existingPath, newPath) {
+    if (this.resolve) {
+        existingPath = this.resolve(existingPath);
+        newPath = this.resolve(newPath);
+    }
+
     await mkd_parent(newPath);
     await link(existingPath, newPath);
 };
@@ -116,6 +134,10 @@ asyncing.link = async function(existingPath, newPath) {
  * @param  {string} dirname
  */
 asyncing.mkd = async function(dirname) {
+    if (this.resolve) {
+        dirname = this.resolve(dirname);
+    }
+
     await mkd(dirname);
 };
 
@@ -124,6 +146,10 @@ asyncing.mkd = async function(dirname) {
  * @param  {string} [prefix]
  */
 asyncing.mkd_temp = async function(dirname, prefix) {
+    if (this.resolve) {
+        dirname = this.resolve(dirname);
+    }
+
     await mkd(dirname);
     if (prefix) {
         prefix = path.join(dirname, prefix);
@@ -140,6 +166,10 @@ asyncing.mkd_temp = async function(dirname, prefix) {
  * @param  {string} pathname
  */
 asyncing.mkd_parent = async function(pathname) {
+    if (this.resolve) {
+        pathname = this.resolve(pathname);
+    }
+
     await mkd_parent(pathname);
 };
 
@@ -149,6 +179,10 @@ asyncing.mkd_parent = async function(pathname) {
  * @param  {integer}       [mode]
  */
 asyncing.open = async function(filename, flags = 'r', mode) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+    
     await touch(filename);
     return await open(filename, flags, mode);
 };
@@ -158,6 +192,11 @@ asyncing.open = async function(filename, flags = 'r', mode) {
  * @param  {string} newPath
  */
 asyncing.rename = async function(oldPath, newPath) {
+    if (this.resolve) {
+        oldPath = this.resolve(oldPath);
+        newPath = this.resolve(newPath);
+    }
+
     await mkd_parent(newPath);
     await rename(oldPath, newPath);
 };
@@ -166,6 +205,10 @@ asyncing.rename = async function(oldPath, newPath) {
  * @param  {string} pathname
  */
 asyncing.rmfr = async function(pathname) {
+    if (this.resolve) {
+        pathname = this.resolve(pathname);
+    }
+
     await rmfr(pathname);
 };
 
@@ -173,6 +216,10 @@ asyncing.rmfr = async function(pathname) {
  * @param  {string} filename
  */
 asyncing.touch = async function(filename) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
     await touch(filename);
 };
 
@@ -181,6 +228,10 @@ asyncing.touch = async function(filename) {
  * @param  {string|Buffer|TypedArray|DataView} data - see fs.writeFile() for details about data.
  */
 asyncing.writeFile = async function(filename, data) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+    
     await mkd_parent(filename);
     await writeFile(filename, data);
 };
