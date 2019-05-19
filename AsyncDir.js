@@ -21,11 +21,20 @@ class AsyncDir extends Dir {
         super(base);
         Object.assign(this, asyncing);
     }
+    
+    /**
+     * @param {*} filename 
+     * @return {boolean}
+     */
+    exists(filename) {
+        return fs.existsSync(this.resolve(filename));
+    }
 
     /**
      * Read file content.
      * @param {string}  filename 
      * @param {string} [encoding]
+     * @return {Promise(string | Buffer)}
      */
     readFile(filename, encoding) {
         return readFile(this.resolve(filename), encoding);

@@ -29,13 +29,12 @@ describe('SyncDir', () => {
         syncdir = new SyncDir(base);
     });
 
-    it('resolve', () => {
-        let pathname = 'resolve/README';
-        let realpath = syncdir.resolve(pathname);
-        assert.equal(realpath, P(pathname));
+    it('exists', () => {
+        let pathname = 'exists';
+        assert.equal(syncdir.exists(pathname), false);
     });
 
-    it('readFile', async () => {
+    it('readFile', () => {
         let filename = 'readFile/README';
         syncdir.writeFile(filename, TXT);
         
@@ -44,6 +43,12 @@ describe('SyncDir', () => {
 
         let txt = syncdir.readFile(filename, 'utf8');
         assert.equal(txt, TXT);
+    });    
+
+    it('resolve', () => {
+        let pathname = 'resolve/README';
+        let realpath = syncdir.resolve(pathname);
+        assert.equal(realpath, P(pathname));
     });    
 
     it('appendFile', () => {

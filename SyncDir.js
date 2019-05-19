@@ -21,9 +21,18 @@ class SyncDir extends Dir {
     }
 
     /**
+     * @param {*} filename 
+     * @return {boolean}
+     */
+    exists(filename) {
+        return fs.existsSync(this.resolve(filename));
+    }
+
+    /**
      * Read file content.
      * @param {string}  filename 
      * @param {string} [encoding]
+     * @return {string | Buffer}
      */
     readFile(filename, encoding) {
         return fs.readFileSync(this.resolve(filename), encoding);

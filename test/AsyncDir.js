@@ -29,10 +29,9 @@ describe('AsyncDir', () => {
         asyncdir = new AsyncDir(base);
     });
 
-    it('resolve', () => {
-        let pathname = 'resolve/README';
-        let realpath = asyncdir.resolve(pathname);
-        assert.equal(realpath, P(pathname));
+    it('exists', async () => {
+        let pathname = 'exists';
+        assert.equal(await asyncdir.exists(pathname), false);
     });
 
     it('readFile', async () => {
@@ -46,6 +45,12 @@ describe('AsyncDir', () => {
         assert.equal(txt, TXT);
     });
 
+    it('resolve', () => {
+        let pathname = 'resolve/README';
+        let realpath = asyncdir.resolve(pathname);
+        assert.equal(realpath, P(pathname));
+    });
+    
     it('appendFile', async () => {
         let filename = 'appendFile/README';
         await asyncdir.appendFile(filename, TXT);
