@@ -30,7 +30,7 @@ class Dir {
      * @param  {Object} [options]   - see fs.createReadStream() for details about options.
      */
     createReadStream(filename, options) {
-        return fs.createReadStream(this.resolve(name), options);
+        return fs.createReadStream(this.resolve(filename), options);
     }
 }
 

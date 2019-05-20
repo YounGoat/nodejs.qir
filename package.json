@@ -1,6 +1,6 @@
 {
     "name": "qir",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "another fs",
     "main": "index.js",
     "scripts": {

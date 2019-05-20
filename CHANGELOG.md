@@ -2,6 +2,10 @@
 
 Notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning 2.0.0](http://semver.org/).
 
+##	[0.0.6] - May 20th, 2019
+
+*	Fixed the bug in `(new *Dir).createReadStream()`.
+
 ##  [0.0.5] - May 19th, 2019
 
 *   `(new *Dir).exists()` added.
