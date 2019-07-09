@@ -59,6 +59,10 @@ The method collections `syncing` and `asyncing` are parallel, so are the classes
 
 Each of the method collections and class instances has following methods:  
 
+*   boolean  
+    __exists__( string *pathname* )  
+    Only available for instances of `AsyncDir` and `SyncDir`.
+
 *   string  
     __resolve__( string *pathname* )  
     Only available for instances of `AsyncDir` and `SyncDir`.
