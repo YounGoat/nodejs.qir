@@ -200,6 +200,32 @@ syncing.rmfr = function(pathname) {
 };
 
 /**
+ * @param  {string}  target 
+ * @param  {string}  pathname 
+ * @param  {string} [type] 
+ */
+syncing.symlink = function(target, pathname, type) {
+    if (this.resolve) {
+        target = this.resolve(target);
+        pathname = this.resolve(pathname);
+    }
+    else {
+        /**
+         * ATTENTION: Built-in `fs.symlink(target, path)` will 
+         * create a symbol link at `path` and point it to `target` 
+         * without resovling, whether or not the target really exists.
+         * 
+         * 注意：内置的 `fs.symlink(target, path)` 方法将在 `path` 指定的位置
+         * 创建一个符号链接，并将它指向 `target`，而不管 `target` 是否真的存在，
+         * 也不会解析其完整路径。
+         */
+        target = path.resolve(target);
+    }
+    fs.symlinkSync(target, pathname, type);
+    return;
+};
+
+/**
  * @param  {string} filename
  */
 syncing.touch = function(filename) {

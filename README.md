@@ -102,6 +102,9 @@ Each of the method collections and class instances has following methods:
     __rmfr__( string *pathname* )
 
 *   void | Promise(void)  
+    __symlink__( string *target*, string *pathname* [, string *type* ] )
+
+*   void | Promise(void)  
     __touch__( string *filename* )
 
 *   void | Promise(void)  
