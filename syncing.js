@@ -10,6 +10,16 @@ const MODULE_REQUIRE = 1
     /* in-package */
 
     /* in-file */
+
+    , exists = pathname => {
+        try {
+            fs.lstatSync(pathname);
+            return true;
+        }
+        catch (ex) {
+            return false;
+        }
+    }
     
     , mkd = dirname => {
         if (!fs.existsSync(dirname)) {    
@@ -24,8 +34,8 @@ const MODULE_REQUIRE = 1
     }
 
     , rmfr = pathname => {
-        if (fs.existsSync(pathname)) {
-            if (fs.statSync(pathname).isDirectory()) {
+        if (exists(pathname)) {
+            if (fs.lstatSync(pathname).isDirectory()) {
                 // 删除目录内容。
                 fs.readdirSync(pathname).forEach(filename => rmfr(path.join(pathname, filename)));
     
@@ -68,6 +78,36 @@ syncing.appendFile = function(filename, data) {
 };
 
 /**
+ * @param  {string}  src
+ * @param  {string}  dest
+ */
+syncing.copy = function(src, dest, _resolved = false) {
+    if (this.resolve && !_resolved) {
+        src = this.resolve(src);
+        dest = this.resolve(dest);
+    }
+
+    if (fs.lstatSync(src).isDirectory()) {
+        let names = fs.readdirSync(src);
+        for (let i = 0; i < names.length; i++) {
+            syncing.copy(path.join(src, names[i]),  path.join(dest, names[i]), true);
+        }
+
+        /**
+         * Create an empty directory.
+         */
+        if (names.length == 0) {
+            syncing.mkd(dest);
+        }
+    }
+    else {
+        mkd_parent(dest);
+        fs.copyFileSync(src, dest);
+    }
+}
+
+
+/**
  * @param  {string}  srcFilename
  * @param  {string}  destFilename
  * @param  {number} [flags]          - see fs.copyFile() for details about flags.
@@ -97,6 +137,18 @@ syncing.createWriteStream = function(filename, options) {
 };
 
 /**
+ * @param {*} filename 
+ * @return {boolean}
+ */
+syncing.exists = function(filename) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
+    return exists(filename);
+};
+
+/**
  * @param  {string} existingPath
  * @param  {string} newPath
  */
@@ -108,7 +160,7 @@ syncing.link = function(existingPath, newPath) {
 
     mkd_parent(newPath);
     fs.linkSync(existingPath, newPath);
-    return 
+    return;
 };
 
 /**
@@ -173,6 +225,45 @@ syncing.open = function(filename, flags = 'r', mode) {
 };
 
 /**
+ * Read file content.
+ * @param {string}  filename 
+ * @param {string} [encoding]
+ * @return {string | Buffer}
+ */
+syncing.readFile = function(filename, encoding) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
+    return fs.readFileSync(filename, encoding);
+};
+
+/**
+ * @param {string}  filename 
+ * @param {string} [encoding]
+ */
+syncing.readJSON = function(filename, encoding = 'utf8') {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
+    let content = fs.readFileSync(filename, encoding);
+    return JSON.parse(content);
+};
+
+/**
+ * @param {string}  dirname 
+ * @return {string[]}
+ */
+syncing.readdir = function(dirname) {
+    if (this.resolve) {
+        dirname = this.resolve(dirname);
+    }
+
+    return fs.readdirSync(dirname);
+};
+
+/**
  * @param  {string} oldPath
  * @param  {string} newPath
  */
@@ -221,6 +312,7 @@ syncing.symlink = function(target, pathname, type) {
          */
         target = path.resolve(target);
     }
+    mkd_parent(pathname);
     fs.symlinkSync(target, pathname, type);
     return;
 };
@@ -250,5 +342,21 @@ syncing.writeFile = function(filename, data) {
     fs.writeFileSync(filename, data);
     return;
 };
+
+/**
+ * @param  {string} filename
+ * @param  {JSON}   json
+ */
+syncing.writeJSON = function(filename, json) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+    
+    mkd_parent(filename);
+    let data = JSON.stringify(json, null, 4);
+    fs.writeFileSync(filename, data);
+    return;
+};
+
 
 module.exports = syncing;

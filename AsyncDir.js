@@ -12,32 +12,12 @@ const MODULE_REQUIRE = 1
     , Dir = require('./class/Dir')
 
     /* in-file */
-    , readFile = util.promisify(fs.readFile)
     ;
 
 class AsyncDir extends Dir {
-
     constructor(base) {
         super(base);
         Object.assign(this, asyncing);
-    }
-    
-    /**
-     * @param {*} filename 
-     * @return {boolean}
-     */
-    exists(filename) {
-        return fs.existsSync(this.resolve(filename));
-    }
-
-    /**
-     * Read file content.
-     * @param {string}  filename 
-     * @param {string} [encoding]
-     * @return {Promise(string | Buffer)}
-     */
-    readFile(filename, encoding) {
-        return readFile(this.resolve(filename), encoding);
     }
 }
 

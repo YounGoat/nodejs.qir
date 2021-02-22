@@ -1,6 +1,6 @@
 {
     "name": "qir",
-    "version": "0.0.7",
+    "version": "0.1.0",
     "description": "another fs",
     "main": "index.js",
     "scripts": {
@@ -14,9 +14,11 @@
     "license": "ISC",
     "bin": {},
     "dependencies": {
-        "noda": "^0.5.0"
+        "noda": "^0.6.0"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "mocha": "^8.3.0"
+    },
     "directories": {},
     "keywords": [
         "fs",

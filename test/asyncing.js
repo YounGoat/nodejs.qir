@@ -29,6 +29,16 @@ describe('asyncing', () => {
         assert(fs.existsSync(filename));
     });
 
+    it('copy', async () => {
+        await asyncing.appendFile(P('copy/src/a0/b0/c0'), TXT);
+        await asyncing.appendFile(P('copy/src/a0/b1/c0'), TXT);
+        await asyncing.mkd(P('copy/src/a0/b2'));
+        await asyncing.copy(P('copy/src'), P('copy/dest'));
+        assert(fs.existsSync(P('copy/dest/a0/b0/c0')));
+        assert(fs.existsSync(P('copy/dest/a0/b1/c0')));
+        assert(fs.existsSync(P('copy/dest/a0/b2')));
+    });
+
     it('copyFile', async () => {
         let srcFilename  = P('copyFile/src/README');
         let destFilename = P('copyFile/dest/README');
@@ -38,10 +48,20 @@ describe('asyncing', () => {
     });
 
     it('createWriteStream', async () => {
-        let filename  = P('write/README');
+        let filename = P('write/README');
         let s = await asyncing.createWriteStream(filename);
         assert(s instanceof stream.Writable);
         s.end();
+    });
+
+    it('exists', async () => {
+        let pathname = P('exists');
+        assert.equal(await asyncing.exists(pathname), false);
+
+        let filename = P('exists/README');
+        await asyncing.appendFile(filename, TXT);
+        assert(await asyncing.exists(pathname));
+        assert(await asyncing.exists(filename));
     });
 
     it('link', async () => {
@@ -97,6 +117,34 @@ describe('asyncing', () => {
         fs.closeSync(fd);
     });
 
+    it('readFile', async () => {
+        let filename = P('readFile/README');
+        await asyncing.writeFile(filename, TXT);
+        
+        let buf = await asyncing.readFile(filename);
+        assert.equal(buf.toString(), TXT);
+
+        let txt = await asyncing.readFile(filename, 'utf8');
+        assert.equal(txt, TXT);
+    });
+
+    it('readJSON / writeJSON', async () => {
+        let data = { title: 'README' };
+        let filename = P('readJSON/README.json');
+        await asyncing.writeJSON(filename, data);
+        
+        let data2 = await asyncing.readJSON(filename);
+        assert.deepEqual(data, data2);
+    });
+
+    it('readdir', async () => {
+        let filename = P('readdir/README');
+        await asyncing.writeFile(filename, TXT);
+
+        let names = await asyncing.readdir(path.dirname(filename));
+        assert.deepEqual(names, [ 'README' ]);
+    });
+
     it('rename', async () => {
         let oldPath = P('rename/old');
         let newPath = P('rename/new/a/b/c');
@@ -137,6 +185,14 @@ describe('asyncing', () => {
             // The folder should have been deleted.
             assert(!fs.existsSync(dirname));
         }
+    });
+
+    it('symlink', async () => {
+        let existingPath = P('symlink/README');
+        let newPath      = P('symlink/link/to/README');
+        await asyncing.appendFile(existingPath, TXT);
+        await asyncing.symlink(existingPath, newPath);
+        assert(fs.existsSync(newPath));
     });
 
     it('touch', async () => {

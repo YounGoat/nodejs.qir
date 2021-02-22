@@ -14,28 +14,9 @@ const MODULE_REQUIRE = 1
     ;
 
 class SyncDir extends Dir {
-
     constructor(base) {
         super(base);
         Object.assign(this, syncing);
-    }
-
-    /**
-     * @param {*} filename 
-     * @return {boolean}
-     */
-    exists(filename) {
-        return fs.existsSync(this.resolve(filename));
-    }
-
-    /**
-     * Read file content.
-     * @param {string}  filename 
-     * @param {string} [encoding]
-     * @return {string | Buffer}
-     */
-    readFile(filename, encoding) {
-        return fs.readFileSync(this.resolve(filename), encoding);
     }
 }
 

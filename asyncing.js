@@ -13,18 +13,23 @@ const MODULE_REQUIRE = 1
     /* in-file */
     , appendFile  = util.promisify(fs.appendFile)
     , copyFile    = util.promisify(fs.copyFile)
-    , exists      = util.promisify(fs.exists)
     , link        = util.promisify(fs.link)
+    , lstat       = util.promisify(fs.lstat)
     , mkdir       = util.promisify(fs.mkdir)
     , mkdtemp     = util.promisify(fs.mkdtemp)
     , open        = util.promisify(fs.open)
     , readdir     = util.promisify(fs.readdir)
+    , readFile    = util.promisify(fs.readFile)    
     , rename      = util.promisify(fs.rename)
     , rmdir       = util.promisify(fs.rmdir)
     , stat        = util.promisify(fs.stat)
     , symlink     = util.promisify(fs.symlink)
     , unlink      = util.promisify(fs.unlink)
     , writeFile   = util.promisify(fs.writeFile)
+
+    , exists = pathname => {
+        return lstat(pathname).then(() => true, () => false);
+    }
     
     , mkd = async dirname => {
         if (! await exists(dirname)) { 
@@ -45,7 +50,7 @@ const MODULE_REQUIRE = 1
 
     , rmfr = async pathname => {
         if (await exists(pathname)) {
-            if ((await stat(pathname)).isDirectory()) {
+            if ((await lstat(pathname)).isDirectory()) {
                 // 删除目录内容。
                 let names = await readdir(pathname);
                 for (let i = 0; i < names.length; i++) {
@@ -104,6 +109,35 @@ asyncing.copyFile = async function(srcFilename, destFilename, flags) {
 };
 
 /**
+ * @param  {string}  src
+ * @param  {string}  dest
+ */
+asyncing.copy = async function(src, dest, _resolved = false) {
+    if (this.resolve && !_resolved) {
+        src = this.resolve(src);
+        dest = this.resolve(dest);
+    }
+
+    if ((await lstat(src)).isDirectory()) {
+        let names = await readdir(src);
+        for (let i = 0; i < names.length; i++) {
+            await asyncing.copy(path.join(src, names[i]),  path.join(dest, names[i]), true);
+        }
+
+        /**
+         * Create an empty directory.
+         */
+        if (names.length == 0) {
+            await asyncing.mkd(dest);
+        }
+    }
+    else {
+        await mkd_parent(dest);
+        await copyFile(src, dest);
+    }
+}
+
+/**
  * @param  {string}  filename
  * @param  {Object} [options]   - see fs.createWriteStream() for details about options.
  */
@@ -114,6 +148,18 @@ asyncing.createWriteStream = async function(filename, options) {
 
     await mkd_parent(filename);
     return fs.createWriteStream(filename, options);
+};
+    
+/**
+ * @param {*} filename 
+ * @return {boolean}
+ */
+asyncing.exists = async function(filename) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
+    return await exists(filename);
 };
 
 /**
@@ -189,6 +235,45 @@ asyncing.open = async function(filename, flags = 'r', mode) {
 };
 
 /**
+ * Read file content.
+ * @param {string}  filename 
+ * @param {string} [encoding]
+ * @return {string | Buffer}
+ */
+asyncing.readFile = async function(filename, encoding) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
+    return await readFile(filename, encoding);
+};
+
+/**
+ * @param {string}  filename 
+ * @param {string} [encoding]
+ * @return {JSON}
+ */
+asyncing.readJSON = async function(filename, encoding = 'utf8') {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+
+    let content = await readFile(filename, encoding);
+    return JSON.parse(content);
+};
+
+/**
+ * @param {string}  dirname 
+ * @return {string[]}
+ */
+asyncing.readdir = async function(dirname) {
+    if (this.resolve) {
+        dirname = this.resolve(dirname);
+    }
+    return await readdir(dirname);
+};
+
+/**
  * @param  {string} oldPath
  * @param  {string} newPath
  */
@@ -218,7 +303,7 @@ asyncing.rmfr = async function(pathname) {
  * @param  {string}  pathname 
  * @param  {string} [type] 
  */
-syncing.symlink = function(target, pathname, type) {
+asyncing.symlink = async function(target, pathname, type) {
     if (this.resolve) {
         target = this.resolve(target);
         pathname = this.resolve(pathname);
@@ -235,7 +320,8 @@ syncing.symlink = function(target, pathname, type) {
          */
         target = path.resolve(target);
     }
-    fs.symlinkSync(target, pathname, type);
+    await mkd_parent(pathname);
+    await symlink(target, pathname, type);
     return;
 };
 
@@ -261,6 +347,19 @@ asyncing.writeFile = async function(filename, data) {
     
     await mkd_parent(filename);
     await writeFile(filename, data);
+};
+
+/**
+ * @param  {string} filename
+ * @param  {JSON} data
+ */
+asyncing.writeJSON = async function(filename, data) {
+    if (this.resolve) {
+        filename = this.resolve(filename);
+    }
+    
+    await mkd_parent(filename);
+    await writeFile(filename, JSON.stringify(data, null, 4));
 };
 
 module.exports = asyncing;

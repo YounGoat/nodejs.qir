@@ -29,6 +29,16 @@ describe('syncing', () => {
         assert(fs.existsSync(filename));
     });
 
+    it('copy', () => {
+        syncing.appendFile(P('copy/src/a0/b0/c0'), TXT);
+        syncing.appendFile(P('copy/src/a0/b1/c0'), TXT);
+        syncing.mkd(P('copy/src/a0/b2'));
+        syncing.copy(P('copy/src'), P('copy/dest'));
+        assert(fs.existsSync(P('copy/dest/a0/b0/c0')));
+        assert(fs.existsSync(P('copy/dest/a0/b1/c0')));
+        assert(fs.existsSync(P('copy/dest/a0/b2')));
+    });
+
     it('copyFile', () => {
         let srcFilename  = P('copyFile/src/README');
         let destFilename = P('copyFile/dest/README');
@@ -42,6 +52,16 @@ describe('syncing', () => {
         let s = syncing.createWriteStream(filename);
         assert(s instanceof stream.Writable);
         s.end();
+    });
+
+    it('exists', () => {
+        let pathname = P('exists');
+        assert.equal(syncing.exists(pathname), false);
+
+        let filename = P('exists/README');
+        syncing.appendFile(filename, TXT);
+        assert(syncing.exists(pathname));
+        assert(syncing.exists(filename));
     });
 
     it('link', () => {
@@ -97,6 +117,34 @@ describe('syncing', () => {
         fs.closeSync(fd);
     });
 
+    it('readFile', () => {
+        let filename = P('readFile/README');
+        syncing.writeFile(filename, TXT);
+        
+        let buf = syncing.readFile(filename);
+        assert.equal(buf.toString(), TXT);
+
+        let txt = syncing.readFile(filename, 'utf8');
+        assert.equal(txt, TXT);
+    });
+
+    it('readJSON / writeJSON', async () => {
+        let data = { title: 'README' };
+        let filename = P('readJSON/README.json');
+        syncing.writeJSON(filename, data);
+        
+        let data2 = syncing.readJSON(filename);
+        assert.deepEqual(data, data2);
+    });
+
+    it('readdir', () => {
+        let filename = 'readdir/README';
+        syncing.writeFile(filename, TXT);
+
+        let names = syncing.readdir('readdir');
+        assert.deepEqual(names, [ 'README' ]);
+    });
+
     it('rename', () => {
         let oldPath = P('rename/old');
         let newPath = P('rename/new/a/b/c');
@@ -137,6 +185,14 @@ describe('syncing', () => {
             // The folder should have been deleted.
             assert(!fs.existsSync(dirname));
         }
+    });
+
+    it('symlink', async () => {
+        let existingPath = P('symlink/README');
+        let newPath      = P('symlink/link/to/README');
+        syncing.appendFile(existingPath, TXT);
+        syncing.symlink(existingPath, newPath);
+        assert(fs.existsSync(newPath));
     });
 
     it('touch', () => {

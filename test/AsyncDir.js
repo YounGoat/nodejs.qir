@@ -29,22 +29,6 @@ describe('AsyncDir', () => {
         asyncdir = new AsyncDir(base);
     });
 
-    it('exists', async () => {
-        let pathname = 'exists';
-        assert.equal(await asyncdir.exists(pathname), false);
-    });
-
-    it('readFile', async () => {
-        let filename = 'readFile/README';
-        await asyncdir.writeFile(filename, TXT);
-        
-        let buf = await asyncdir.readFile(filename);
-        assert.equal(buf.toString(), TXT);
-
-        let txt = await asyncdir.readFile(filename, 'utf8');
-        assert.equal(txt, TXT);
-    });
-
     it('resolve', () => {
         let pathname = 'resolve/README';
         let realpath = asyncdir.resolve(pathname);
@@ -55,6 +39,16 @@ describe('AsyncDir', () => {
         let filename = 'appendFile/README';
         await asyncdir.appendFile(filename, TXT);
         assert(fs.existsSync(P(filename)));
+    });
+
+    it('copy', async () => {
+        await asyncdir.appendFile('copy/src/a0/b0/c0', TXT);
+        await asyncdir.appendFile('copy/src/a0/b1/c0', TXT);
+        await asyncdir.mkd('copy/src/a0/b2');
+        await asyncdir.copy('copy/src', 'copy/dest');
+        assert(fs.existsSync(P('copy/dest/a0/b0/c0')));
+        assert(fs.existsSync(P('copy/dest/a0/b1/c0')));
+        assert(fs.existsSync(P('copy/dest/a0/b2')));
     });
 
     it('copyFile', async () => {
@@ -70,6 +64,16 @@ describe('AsyncDir', () => {
         let s = await asyncdir.createWriteStream(filename);
         assert(s instanceof stream.Writable);
         s.end();
+    });
+
+    it('exists', async () => {
+        let pathname = 'exists';
+        assert.equal(await asyncdir.exists(pathname), false);
+
+        let filename = 'exists/README';
+        await asyncdir.appendFile(filename, TXT);
+        assert(await asyncdir.exists(pathname));
+        assert(await asyncdir.exists(filename));
     });
 
     it('link', async () => {
@@ -125,6 +129,34 @@ describe('AsyncDir', () => {
         fs.closeSync(fd);
     });
 
+    it('readFile', async () => {
+        let filename = 'readFile/README';
+        await asyncdir.writeFile(filename, TXT);
+        
+        let buf = await asyncdir.readFile(filename);
+        assert.equal(buf.toString(), TXT);
+
+        let txt = await asyncdir.readFile(filename, 'utf8');
+        assert.equal(txt, TXT);
+    });
+
+    it('readJSON / writeJSON', async () => {
+        let data = { title: 'README' };
+        let filename = 'readJSON/README.json';
+        await asyncdir.writeJSON(filename, data);
+        
+        let data2 = await asyncdir.readJSON(filename);
+        assert.deepEqual(data, data2);
+    });
+
+    it('readdir', async () => {
+        let filename = 'readdir/README';
+        await asyncdir.writeFile(filename, TXT);
+
+        let names = await asyncdir.readdir('readdir');
+        assert.deepEqual(names, [ 'README' ]);
+    });
+
     it('rename', async () => {
         let oldPath = 'rename/old';
         let newPath = 'rename/new/a/b/c';
@@ -167,6 +199,14 @@ describe('AsyncDir', () => {
         }
     });
 
+    it('symlink', async () => {
+        let existingPath = 'symlink/README';
+        let newPath      = 'symlink/link/to/README';
+        await asyncdir.appendFile(existingPath, TXT);
+        await asyncdir.symlink(existingPath, newPath);
+        assert(fs.existsSync(P(newPath)));
+    });
+
     it('touch', async () => {
         let filename = 'touch/README';
         await asyncdir.touch(filename);
@@ -178,5 +218,4 @@ describe('AsyncDir', () => {
         await asyncdir.writeFile(filename, TXT);
         assert(fs.existsSync(P(filename)));
     });
-
 });

@@ -29,22 +29,6 @@ describe('SyncDir', () => {
         syncdir = new SyncDir(base);
     });
 
-    it('exists', () => {
-        let pathname = 'exists';
-        assert.equal(syncdir.exists(pathname), false);
-    });
-
-    it('readFile', () => {
-        let filename = 'readFile/README';
-        syncdir.writeFile(filename, TXT);
-        
-        let buf = syncdir.readFile(filename);
-        assert.equal(buf.toString(), TXT);
-
-        let txt = syncdir.readFile(filename, 'utf8');
-        assert.equal(txt, TXT);
-    });    
-
     it('resolve', () => {
         let pathname = 'resolve/README';
         let realpath = syncdir.resolve(pathname);
@@ -70,6 +54,16 @@ describe('SyncDir', () => {
         let s = syncdir.createWriteStream(filename);
         assert(s instanceof stream.Writable);
         s.end();
+    });
+
+    it('exists', () => {
+        let pathname = 'exists';
+        assert.equal(syncdir.exists(pathname), false);
+
+        let filename = 'exists/README';
+        syncdir.appendFile(filename, TXT);
+        assert(syncdir.exists(pathname));
+        assert(syncdir.exists(filename));
     });
 
     it('link', () => {
@@ -125,6 +119,34 @@ describe('SyncDir', () => {
         fs.closeSync(fd);
     });
 
+    it('readFile', () => {
+        let filename = 'readFile/README';
+        syncdir.writeFile(filename, TXT);
+        
+        let buf = syncdir.readFile(filename);
+        assert.equal(buf.toString(), TXT);
+
+        let txt = syncdir.readFile(filename, 'utf8');
+        assert.equal(txt, TXT);
+    });
+
+    it('readJSON / writeJSON', () => {
+        let data = { title: 'README' };
+        let filename = 'readJSON/README.json';
+        syncdir.writeJSON(filename, data);
+        
+        let data2 = syncdir.readJSON(filename);
+        assert.deepEqual(data, data2);
+    });
+
+    it('readdir', () => {
+        let filename = 'readdir/README';
+        syncdir.writeFile(filename, TXT);
+
+        let names = syncdir.readdir('readdir');
+        assert.deepEqual(names, [ 'README' ]);
+    });
+
     it('rename', () => {
         let oldPath = 'rename/old';
         let newPath = 'rename/new/a/b/c';
@@ -153,7 +175,7 @@ describe('SyncDir', () => {
         }
 
         RM_DIR: {
-            let dirname = P('rmfr');
+            let dirname = 'rmfr';
             let filename = path.join(dirname, 'README');
 
             // Create a file firstly.
@@ -165,6 +187,14 @@ describe('SyncDir', () => {
             // The folder should have been deleted.
             assert(!fs.existsSync(P(dirname)));
         }
+    });
+    
+    it('symlink', () => {
+        let existingPath = 'symlink/README';
+        let newPath      = 'symlink/link/to/README';
+        syncdir.appendFile(existingPath, TXT);
+        syncdir.symlink(existingPath, newPath);
+        assert(fs.existsSync(P(newPath)));
     });
 
     it('touch', () => {
