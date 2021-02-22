@@ -59,26 +59,22 @@ The method collections `syncing` and `asyncing` are parallel, so are the classes
 
 Each of the method collections and class instances has following methods:  
 
-*   boolean  
-    __exists__( string *pathname* )  
-    Only available for instances of `AsyncDir` and `SyncDir`.
-
-*   string  
-    __resolve__( string *pathname* )  
-    Only available for instances of `AsyncDir` and `SyncDir`.
-
-*   string | Buffer | Promis(string) | Promise(Buffer)  
-    __readFile__( string *pathname* )  
-    Only available for instances of `AsyncDir` and `SyncDir`.
 
 *   void | Promise(void)   
     __appendFile__( string *filename*, string | Buffer *data* )
+
+*   void | Promise(void)  
+    __copy__( string *src*, string *dest*)
 
 *   void | Promise(void)   
     __copyFile__( string *src*, string *dest*, number *flags* )
 
 *   stream.Writable | Promise(stream.Writable)  
     __createWriteStream__( string *filename*[, Object *options*] )
+
+*   boolean  
+    __exists__( string *pathname* )  
+    Only available for instances of `AsyncDir` and `SyncDir`.
 
 *   void | Promise(void)  
     __link__( string *existingPath*, string *newPath* )
@@ -95,8 +91,22 @@ Each of the method collections and class instances has following methods:
 *   integer | Promise(integer)  
     __open__( string *filename* [, string | number *flags* [, integer *mode* ] ] )
 
+*   string | Buffer | Promis(string) | Promise(Buffer)  
+    __readFile__( string *pathname* )  
+    Only available for instances of `AsyncDir` and `SyncDir`.
+
+*   JSON | Promise(JSON)  
+    __readJSON__( string *filename* )
+
+*   string[] | Promis(string[])  
+    __readdir__( string *dirname* )  
+
 *   void | Promise(void)  
     __rename__( string *oldPath*, string *newPath* )
+
+*   string  
+    __resolve__( string *pathname* )  
+    Only available for instances of `AsyncDir` and `SyncDir`.
 
 *   void | Promise(void)  
     __rmfr__( string *pathname* )
@@ -109,6 +119,9 @@ Each of the method collections and class instances has following methods:
 
 *   void | Promise(void)  
     __writeFile__ ( string *filename*, string | Buffer | TypedArray | DataView *data* )
+
+*   void | Promise(void)  
+    __writeJSON__ ( string *filename*, JSON *json* )
 
 ATTENTIONS:
 *   In asynchronous mode, the leading type names represent NOT what the function will return on invoked, BUT *data* in `.then(data)`. Actually, each function will return an instance of `Promise` in asynchronous mode.
