@@ -111,6 +111,10 @@ Each of the method collections and class instances has following methods:
 *   void | Promise(void)  
     __rmfr__( string *pathname* )
 
+*   fs.Stats | Promise(fs.Stats)  
+    __stat__( string *pathname* )  
+    ATTENTION： This method is some different from built-in `fs.stats` which will throws an Error if the target is not accessible. It will return `null` in such case.
+
 *   void | Promise(void)  
     __symlink__( string *target*, string *pathname* [, string *type* ] )
 

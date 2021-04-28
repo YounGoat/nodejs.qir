@@ -291,6 +291,22 @@ syncing.rmfr = function(pathname) {
 };
 
 /**
+ * @param  {string} pathname
+ */
+ syncing.stat = function(pathname) {
+    if (this.resolve) {
+        pathname = this.resolve(pathname);
+    }
+
+    try {
+        return fs.statSync(pathname);
+    }
+    catch (ex) {
+        return null;
+    }
+};
+
+/**
  * @param  {string}  target 
  * @param  {string}  pathname 
  * @param  {string} [type] 

@@ -187,6 +187,15 @@ describe('asyncing', () => {
         }
     });
 
+    it('stat', async () => {
+        let filename = P('stat/README');
+        assert(null == await asyncing.stat(filename));
+
+        await asyncing.touch(filename);
+        let info = await asyncing.stat(filename);
+        assert(info instanceof fs.Stats && info.size == 0);
+    });
+
     it('symlink', async () => {
         let existingPath = P('symlink/README');
         let newPath      = P('symlink/link/to/README');

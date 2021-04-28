@@ -188,6 +188,15 @@ describe('SyncDir', () => {
             assert(!fs.existsSync(P(dirname)));
         }
     });
+
+    it('stat', async () => {
+        let filename = 'stat/README';
+        assert(null == syncdir.stat(filename));
+
+        syncdir.touch(filename);
+        let info = syncdir.stat(filename);
+        assert(info instanceof fs.Stats && info.size == 0);
+    });
     
     it('symlink', () => {
         let existingPath = 'symlink/README';

@@ -1,6 +1,8 @@
 
 'use strict';
 
+const asyncing = require('../asyncing');
+
 const MODULE_REQUIRE = 1
     /* built-in */
     , assert = require('assert')
@@ -197,6 +199,15 @@ describe('AsyncDir', () => {
             // The folder should have been deleted.
             assert(!fs.existsSync(P(dirname)));
         }
+    });
+
+    it('stat', async () => {
+        let filename = 'stat/README';
+        assert(null == await asyncdir.stat(filename));
+
+        await asyncdir.touch(filename);
+        let info = await asyncdir.stat(filename);
+        assert(info instanceof fs.Stats && info.size == 0);
     });
 
     it('symlink', async () => {

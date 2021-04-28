@@ -11,6 +11,10 @@ const MODULE_REQUIRE = 1
     /* in-package */
 
     /* in-file */
+    /**
+     * @TODO Replace with fs.promises.*.
+     */
+
     , appendFile  = util.promisify(fs.appendFile)
     , copyFile    = util.promisify(fs.copyFile)
     , link        = util.promisify(fs.link)
@@ -296,6 +300,17 @@ asyncing.rmfr = async function(pathname) {
     }
 
     await rmfr(pathname);
+};
+
+/**
+ * @param {string} pathname 
+ */
+asyncing.stat = async function(pathname) {
+    if (this.resolve) {
+        pathname = this.resolve(pathname);
+    }
+
+    return await stat(pathname).catch(ex => null);
 };
 
 /**

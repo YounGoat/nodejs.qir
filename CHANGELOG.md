@@ -2,6 +2,11 @@
 
 Notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning 2.0.0](http://semver.org/).
 
+##	[0.2.0] - Apr 23rd, 2021
+
+*	New method `stat()` added.  
+	新增 `stat()` 方法。
+
 ##	[0.1.0] - Feb 22nd, 2021
 
 *	修复 asyncing.js 中误用 syncing 对象（命名空间）的致命错误。
