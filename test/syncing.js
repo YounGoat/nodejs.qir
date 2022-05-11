@@ -138,10 +138,10 @@ describe('syncing', () => {
     });
 
     it('readdir', () => {
-        let filename = 'readdir/README';
+        let filename = P('readdir/README');
         syncing.writeFile(filename, TXT);
 
-        let names = syncing.readdir('readdir');
+        let names = syncing.readdir(P('readdir'));
         assert.deepEqual(names, [ 'README' ]);
     });
 

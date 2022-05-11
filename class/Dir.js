@@ -8,6 +8,7 @@ const MODULE_REQUIRE = 1
     /* NPM */
     
     /* in-package */
+    , tmpdir = require('../util/tmpdir')
     ;
 
 class Dir {
@@ -15,7 +16,14 @@ class Dir {
      * @param {string} base 
      */
     constructor(base) {
+        if (!base) {
+            base = tmpdir()
+        }
         this.base = base;
+    }
+
+    clear() {
+        return this.rmfr('.')
     }
 
     /**

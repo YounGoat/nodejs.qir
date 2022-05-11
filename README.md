@@ -59,15 +59,22 @@ The method collections `syncing` and `asyncing` are parallel, so are the classes
 
 Each of the method collections and class instances has following methods:  
 
-
 *   void | Promise(void)   
     __appendFile__( string *filename*, string | Buffer *data* )
+
+*   void | Promise(void)  
+    __clear__()  
+    Only available for instances of `AsyncDir` and `SyncDir`.  
+    Remove everything in the directory and the directory itself.
 
 *   void | Promise(void)  
     __copy__( string *src*, string *dest*)
 
 *   void | Promise(void)   
     __copyFile__( string *src*, string *dest*, number *flags* )
+
+*   stream.Readable | Promise(stream.Readable)  
+    __createReadStream__( string *filename*[, Object *options*] )
 
 *   stream.Writable | Promise(stream.Writable)  
     __createWriteStream__( string *filename*[, Object *options*] )

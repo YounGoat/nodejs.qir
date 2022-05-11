@@ -5,6 +5,7 @@ const MODULE_REQUIRE = 1
     /* built-in */
     , assert = require('assert')
     , fs = require('fs')
+    , os = require('os')
     , path = require('path')
     , stream = require('stream')
 
@@ -22,7 +23,7 @@ describe('SyncDir', () => {
     let syncdir;
 
     after(() => {
-        syncdir.rmfr('.');
+        syncdir?.rmfr('.');
     });
 
     it('init', () => {
@@ -218,4 +219,8 @@ describe('SyncDir', () => {
         assert(fs.existsSync(P(filename)));
     });
 
+    it('Random Base', async() => {
+        let dir = new SyncDir();
+        assert(dir.base.startsWith(os.tmpdir()));
+    });
 });

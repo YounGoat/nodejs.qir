@@ -20,7 +20,7 @@ describe('asyncing', () => {
     const TXT = 'Hello CHING!';
 
     after(async function() {
-        await asyncing.rmfr(base);
+        await asyncing?.rmfr(base);
     });
 
     it('appendFile', async () => {

@@ -7,6 +7,7 @@ const MODULE_REQUIRE = 1
     /* built-in */
     , assert = require('assert')
     , fs = require('fs')
+    , os = require('os')
     , path = require('path')
     , stream = require('stream')
 
@@ -24,7 +25,7 @@ describe('AsyncDir', () => {
     let asyncdir;
 
     after(async () => {
-        await asyncdir.rmfr('.');
+        await asyncdir?.rmfr('.');
     });
 
     it('init', () => {
@@ -228,5 +229,10 @@ describe('AsyncDir', () => {
         let filename = 'writeFile/README';
         await asyncdir.writeFile(filename, TXT);
         assert(fs.existsSync(P(filename)));
+    });
+
+    it('Random Base', async() => {
+        let dir = new AsyncDir();
+        assert(dir.base.startsWith(os.tmpdir()));
     });
 });

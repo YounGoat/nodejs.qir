@@ -2,6 +2,11 @@
 
 Notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning 2.0.0](http://semver.org/).
 
+##	[0.3.0] - May, 2022
+
+*	Generate a unique & random temporary path when no `base` is specified.
+*	New method `.clear()` added to class AsyncDir and class SyncDir.
+
 ##	[0.2.0] - Apr 23rd, 2021
 
 *	New method `stat()` added.  
