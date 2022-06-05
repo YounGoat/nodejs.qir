@@ -83,6 +83,11 @@ Each of the method collections and class instances has following methods:
     __exists__( string *pathname* )  
     Only available for instances of `AsyncDir` and `SyncDir`.
 
+*   string[]  
+    __find__( object *options* )  
+    Only available for `asyncing` and instances of `AsyncDir`.  
+    See [sore/find](https://github.com/YounGoat/sore/blob/master/docs/find.md) for details of *options*.
+
 *   void | Promise(void)  
     __link__( string *existingPath*, string *newPath* )
 

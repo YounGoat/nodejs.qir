@@ -7,6 +7,7 @@ const MODULE_REQUIRE = 1
     , util = require('util')
     
     /* NPM */
+    , find = require('sore/find')
     
     /* in-package */
 
@@ -164,6 +165,28 @@ asyncing.exists = async function(filename) {
     }
 
     return await exists(filename);
+};
+
+/**
+ * @param {*}       options 
+ * @param {string} [options.basepath]
+ * @return {boolean}
+ */
+asyncing.find = async function(options = {}) {
+    const { basepath } = options
+    if (this.resolve) {
+        options.basepath = this.resolve(options.basepath || '.');
+    }
+    else if (!options.basepath) {
+        throw '.basepath is required';
+    }
+
+    let filenames = await find(options)
+    if (this.resolve && basepath) {
+        filenames = filenames.map(filename => path.join(basepath, filename))
+    }
+
+    return filenames;
 };
 
 /**

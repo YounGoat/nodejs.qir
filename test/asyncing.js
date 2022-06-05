@@ -64,6 +64,42 @@ describe('asyncing', () => {
         assert(await asyncing.exists(filename));
     });
 
+    it('find', async () => {
+        await asyncing.appendFile(P('FIND/foo/bar/README'), TXT);
+        await asyncing.appendFile(P('FIND/foo/README'), TXT);
+        await asyncing.appendFile(P('FIND/README'), TXT);
+
+        let dirnames = await asyncing.find({ 
+            basepath: P('FIND'),
+            type: 'd',
+        })
+        assert.deepEqual(dirnames, [ 
+            'foo', 
+            'foo/bar',
+        ])
+
+        let filenames = await asyncing.find({ 
+            basepath: P('FIND'),
+            type: 'f',
+        })
+        assert.deepEqual(filenames, [ 
+            'README', 
+            'foo/README', 
+            'foo/bar/README',
+        ])
+
+        let names = await asyncing.find({ 
+            basepath: P('FIND'),
+        })
+        assert.deepEqual(names, [ 
+            'README', 
+            'foo', 
+            'foo/README', 
+            'foo/bar',
+            'foo/bar/README',
+        ])
+    });
+
     it('link', async () => {
         let existingPath = P('link/src/README');
         let newPath      = P('link/dest/README');

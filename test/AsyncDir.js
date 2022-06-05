@@ -79,6 +79,49 @@ describe('AsyncDir', () => {
         assert(await asyncdir.exists(filename));
     });
 
+    it('find', async () => {
+        let dirFind = new AsyncDir(asyncdir.resolve('FIND'))
+
+        await dirFind.appendFile('foo/bar/README', TXT);
+        await dirFind.appendFile('foo/README', TXT);
+        await dirFind.appendFile('README', TXT);
+
+        let dirnames = await dirFind.find({ 
+            type: 'd',
+        });
+        assert.deepEqual(dirnames, [ 
+            'foo', 
+            'foo/bar',
+        ]);
+
+        let filenames = await dirFind.find({ 
+            type: 'f',
+        });
+        assert.deepEqual(filenames, [ 
+            'README', 
+            'foo/README', 
+            'foo/bar/README',
+        ]);
+
+        let names = await dirFind.find({});
+        assert.deepEqual(names, [ 
+            'README', 
+            'foo', 
+            'foo/README', 
+            'foo/bar',
+            'foo/bar/README',
+        ]);
+
+        let names2 = await dirFind.find({ 
+            basepath: 'foo',
+        });
+        assert.deepEqual(names2, [
+            'foo/README',
+            'foo/bar',
+            'foo/bar/README',
+        ]);
+    })
+
     it('link', async () => {
         let existingPath = 'link/src/README';
         let newPath      = 'link/dest/README';

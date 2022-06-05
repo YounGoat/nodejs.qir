@@ -2,6 +2,10 @@
 
 Notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning 2.0.0](http://semver.org/).
 
+##	[0.4.0] - Jun, 2022
+
+*	New method `.find()` added to namespace asyncing and class AsyncDir.
+
 ##	[0.3.0] - May, 2022
 
 *	Generate a unique & random temporary path when no `base` is specified.
