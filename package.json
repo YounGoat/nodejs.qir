@@ -15,7 +15,7 @@
     "bin": {},
     "dependencies": {
         "noda": "^0.6.0",
-        "sore": "^0.0.3"
+        "sore": "^0.1.0"
     },
     "devDependencies": {
         "mocha": "^8.3.0"
